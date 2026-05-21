@@ -1,16 +1,18 @@
+import * as Linking from 'expo-linking';
+import * as WebBrowser from "expo-web-browser";
+import { openAuthSessionAsync } from "expo-web-browser";
 import {
     Account,
     Avatars,
     Client,
     OAuthProvider
 } from "react-native-appwrite";
-
-import * as Linking from 'expo-linking';
+WebBrowser.maybeCompleteAuthSession();
 
 export const config = {
     platform: 'com.talinosolutions.wiseowlrealty',
     endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
-    projectId: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
+    projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
 }
 
 export const client = new Client();
@@ -60,7 +62,7 @@ export async function login () {
 
 export async function logout() {
     try {
-        await account.deleteSession{'current'};
+        const result = await account.deleteSession('current');
         return true;
     }catch (error) {
         console.error(error);
@@ -69,18 +71,18 @@ export async function logout() {
 
 }
 
-export async function getUser() {
+export async function getCurrentUser() {
     try {
         const response = await account.get();
-
         if (response.$id) {
             const userAvatar = avatar.getInitials(response.name);
-        }
             return {
                 ... response,
                 avatar: userAvatar.toString(),
             };
+        }
 
+        return null;
     } catch (error) {
         console.error(error);
         return null;
