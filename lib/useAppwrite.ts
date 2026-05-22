@@ -31,10 +31,23 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
       try {
         const result = await fn(fetchParams);
         setData(result);
-      } catch (err: unknown) {
+      } catch (err: any) {
         const errorMessage =
-          err instanceof Error ? err.message : "An unknown error occurred";
+          err instanceof Error
+            ? err.message
+            : "An unknown error occurred";
+
+        // Ignore guest/no-session errors
+        if (
+          errorMessage.includes("missing scopes") ||
+          err?.code === 401
+        ) {
+          setData(null);
+          return;
+        }
+
         setError(errorMessage);
+
         Alert.alert("Error", errorMessage);
       } finally {
         setLoading(false);
@@ -43,14 +56,13 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
     [fn] // Memorize the function to ensure stability unless
   );
  
-  // Automaticallyfetch data on component mount, unless 'skip' is 
+  // Automatically fetch data on component mount unless skip is true
   useEffect(() => {
     if (!skip) {
       fetchData(params);
     }
   }, []);
 
-  // Refetch function to fetch data with new parameters
   const refetch = async (newParams: P) => await fetchData(newParams);
 
   return { data, loading, error, refetch };
