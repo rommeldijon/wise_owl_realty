@@ -33,27 +33,28 @@ export async function login () {
             OAuthProvider.Google, 
             redirectUri
         );
-        if (!response) throw new Error('Create OAuth2 token failed');
+        if (!response) throw new Error('Failed to login');
 
         const browserResult = await openAuthSessionAsync(
             response.toString(),
             redirectUri
         );
         if (browserResult.type !== 'success') 
-            throw new Error ('Create OAuth2 token failed');
+            throw new Error ('Failed to login');
 
         const url = new URL(browserResult.url);
+
         const secret = url.searchParams.get('secret')?.toString();
         const userId = url.searchParams.get('userId')?.toString();
 
-        if (!secret || !userId) throw new Error ('Create OAuth2 token failed');
+        if (!secret || !userId) throw new Error ('Failed to login');
 
         const session = await account.createSession(userId, secret);
 
-        if (!session) throw new Error('Failed to create session');
+        if (!session) throw new Error('Failed to login');
 
         return true;      
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         return false;
     }
@@ -62,27 +63,35 @@ export async function login () {
 export async function logout() {
     try {
         const result = await account.deleteSession('current');
-        return result;
+        return true;
     }catch (error) {
         console.error(error);
         return false;
     }
+
 }
 
 export async function getCurrentUser() {
-    try {
-        const response = await account.get();
-        if (response.$id) {
-            const userAvatar = avatar.getInitials(response.name).toString();
-            return {
-                ... response,
-                avatar: userAvatar,
-            };
-        }
+  try {
+    const response = await account.get();
 
-        return null;
-      } catch (error) {
-        console.log(error);
-        return null;
+    if (response.$id) {
+      const avatarUrl =
+        `${config.endpoint}/avatars/initials` +
+        `?name=${encodeURIComponent(response.name || "User")}` +
+        `&width=176` +
+        `&height=176` +
+        `&project=${config.projectId}`;
+
+      return {
+        ...response,
+        avatar: avatarUrl,
+      };
     }
+
+    return null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
