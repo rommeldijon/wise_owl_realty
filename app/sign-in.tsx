@@ -41,7 +41,7 @@ const SignIn = () => {
           </Text>
 
           <Text className='text-3xl font-rubik-bold text-black-300 text-center mt-2'>
-            Let's Get You Closer to {"\n"}
+            Let&apos;s Get You Closer to {"\n"}
             <Text className='text-primary-300'>Your Ideal Home</Text>
           </Text>
 
