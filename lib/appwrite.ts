@@ -89,10 +89,3 @@ export async function getCurrentUser() {
     return null;
   }
 }
-
-    return null;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
