@@ -40,6 +40,15 @@ const SettingsItem = ({
 const Profile = () => {
   const { user, refetch } = useGlobalContext();
 
+  const userInitials = user?.name
+    ?.split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('') ?? '';
+
+  const [avatarFailed, setAvatarFailed] = React.useState(false);
+
   const handleLogout = async () => {
      const result = await logout();
      if (result) {
@@ -66,10 +75,19 @@ const Profile = () => {
 
           <View className='flex-row justify-center flex mt-5'>
             <View className='flex flex-col items-center relative mt-5'>
-              <Image
-              source={{ uri: user?.avatar }}
-              className="size-44 relative rounded-full"
-              />
+              {!avatarFailed && user?.avatar ? (
+                <Image
+                source={{ uri: user.avatar }}
+                className="size-44 relative rounded-full"
+                onError={() => setAvatarFailed(true)}
+                />
+              ) : (
+                <View className='size-44 rounded-full bg-primary-200 items-center justify-center'>
+                  <Text className='text-4xl font-rubik-bold text-primary-300'>
+                    {userInitials || '?'}
+                  </Text>
+                </View>
+              )}
               <TouchableOpacity className='absolute bottom-11 right-2'>
               <Image source={icons.edit} className='size-9'/>
               </TouchableOpacity>
