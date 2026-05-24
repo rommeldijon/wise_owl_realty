@@ -50,7 +50,7 @@ const SignIn = () => {
           </Text>
 
           <TouchableOpacity onPress={handleLogin} className='bg-white shadow-zinc-300 rounded-full w-full py-4 mt-5'>
-            <View className='flex flex-row item-center justify-center'>
+            <View className='flex flex-row items-center justify-center'>
             <Image 
                 source={icons.google}
                 className='w-5 h-5'
