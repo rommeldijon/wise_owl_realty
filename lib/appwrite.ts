@@ -73,21 +73,22 @@ export async function logout() {
 
 export async function getCurrentUser() {
   try {
-    const response = await account.get();
-
-    if (response.$id) {
-      const avatarUrl =
-        `${config.endpoint}/avatars/initials` +
-        `?name=${encodeURIComponent(response.name || "User")}` +
-        `&width=176` +
-        `&height=176` +
-        `&project=${config.projectId}`;
+    const result = await account.get();
+    if (result.$id) {
+      const userAvatar = avatar.getInitials(result.name);
 
       return {
-        ...response,
-        avatar: avatarUrl,
+        ...result,
+        avatar: userAvatar.toString(),
       };
     }
+
+    return null;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 
     return null;
   } catch (error) {

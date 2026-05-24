@@ -31,32 +31,18 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
       try {
         const result = await fn(fetchParams);
         setData(result);
-      } catch (err: any) {
+      } catch (err: unknown) {
         const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "An unknown error occurred";
-
-        // Ignore guest/no-session errors
-        if (
-          errorMessage.includes("missing scopes") ||
-          err?.code === 401
-        ) {
-          setData(null);
-          return;
-        }
-
+          err instanceof Error ? err.message : "An unknown error occurred";
         setError(errorMessage);
-
         Alert.alert("Error", errorMessage);
       } finally {
         setLoading(false);
       }
     },
-    [fn] // Memorize the function to ensure stability unless
+    [fn]
   );
- 
-  // Automatically fetch data on component mount unless skip is true
+
   useEffect(() => {
     if (!skip) {
       fetchData(params);
