@@ -1,4 +1,10 @@
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Card, FeaturedCard } from '@/components/Cards';
@@ -6,9 +12,23 @@ import Filters from "@/components/Filters";
 import Search from '@/components/Search';
 import icons from "@/constants/icons";
 import { useGlobalContext } from "@/lib/global-provider";
+import React from "react";
 
 export default function Index() {
     const { user } = useGlobalContext();
+    const [avatarLoadFailed, setAvatarLoadFailed] = React.useState(false);
+
+    const initialsSource = user?.name?.trim() || user?.email?.trim() || "";
+    const userInitials = initialsSource
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("");
+
+    React.useEffect(() => {
+      setAvatarLoadFailed(false);
+    }, [user?.avatar]);
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -25,7 +45,30 @@ export default function Index() {
         
           <View className="flex flex-row items-center justify-between mt-5">
             <View className="flex flex-row items-center">
-              <Image source={{ uri: user?.avatar }} className="size-12 rounded-full"/>
+              {user?.avatar && !avatarLoadFailed ? (
+                <Image
+                  source={{ uri: user.avatar }}
+                  style={{ width: 88, height: 88, borderRadius: 44, marginBottom: 16 }}
+                  onError={() => setAvatarLoadFailed(true)}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: 88,
+                    height: 88,
+                    borderRadius: 44,
+                    backgroundColor: "#E8ECFF",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 16,
+                  }}
+                >
+                  <Text style={{ fontSize: 28, lineHeight: 32, color: "#475BE8", fontWeight: "700" }}>
+                    {userInitials || "?"}
+                  </Text>
+                </View>
+              )}
+
               <View className="flex flex-col items-start ml-2 justify-center">
                 <Text className="text-xs font-rubik text-black-100">Good Morning</Text>
                 <Text className="text-base font-rubik-medium text-black-300"> Rommel </Text>

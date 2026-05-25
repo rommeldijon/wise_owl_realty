@@ -3,7 +3,6 @@ import * as WebBrowser from "expo-web-browser";
 import { openAuthSessionAsync } from "expo-web-browser";
 import {
     Account,
-    Avatars,
     Client,
     OAuthProvider
 } from "react-native-appwrite";
@@ -22,7 +21,6 @@ client
     .setProject(config.projectId!)
     .setPlatform(config.platform!)
 
-export const avatar = new Avatars(client);
 export const account = new Account(client);
 
 export async function login () {
@@ -75,11 +73,15 @@ export async function getCurrentUser() {
   try {
     const result = await account.get();
     if (result.$id) {
-      const userAvatar = avatar.getInitials(result.name);
+      const prefs = result.prefs as Record<string, unknown>;
+      const customAvatar =
+        (typeof prefs?.avatar === 'string' && prefs.avatar) ||
+        (typeof prefs?.avatarUrl === 'string' && prefs.avatarUrl) ||
+        '';
 
       return {
         ...result,
-        avatar: userAvatar.toString(),
+        avatar: customAvatar,
       };
     }
 
