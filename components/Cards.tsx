@@ -30,7 +30,7 @@ export const FeaturedCard= ({ item:{image, rating, name, address, price }, onPre
             <Text className='text-xl font-rubik-extrabold text-white' numberOfLines={1}>{name}</Text>
             <Text className='text-base font-rubik text-white'>{address}</Text>
             <View className='flex flex-row items-center justify-between w-full'>
-                <Text className='text-xl font-rubik-extrabold text-white'>{price}</Text>
+                <Text className='text-xl font-rubik-extrabold text-white'>${price}</Text>
                 <Image source={icons.heart} className='size-5'/>
             </View>
         </View>
