@@ -62,7 +62,7 @@ export const Card = ({ item:{image, rating, name, address, price }, onPress }: P
 
                 <View className='flex flex-row items-center justify-between mt-2'>
                     <Text className='text-base font-rubik-bold text-primary-300'>
-                        {price}
+                        ${price}
                     </Text>
                     <Image 
                     source={icons.heart} 
