@@ -19,7 +19,6 @@ import { useAppwrite } from "@/lib/useAppwrite";
 import React, { useEffect } from "react";
 
 export default function Explore() {
-    const [avatarLoadFailed, setAvatarLoadFailed] = React.useState(false);
     const params = useLocalSearchParams<{ query?: string; filter?: string }>();
 
     const {
@@ -42,7 +41,7 @@ export default function Explore() {
         query: params.query!,
         limit: 12,
       });
-    }, [params.filter, params.query]);
+    }, [params.filter, params.query, refetch]);
     
     const handleCardPress = (id: string) => router.push(`/properties/${id}`);
 

@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -16,10 +17,16 @@ import icons from "@/constants/icons";
 import images from "@/constants/images";
 
 import { getPropertyById } from "@/lib/appwrite";
+import { agentImages } from "@/lib/data";
 import { useAppwrite } from "@/lib/useAppwrite";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Property = () => {
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const insets = useSafeAreaInsets();
+  const [uploadedAgentAvatarLoadFailed, setUploadedAgentAvatarLoadFailed] =
+    useState(false);
+
 
   const windowHeight = Dimensions.get("window").height;
 
@@ -30,11 +37,52 @@ const Property = () => {
     },
   });
 
+  const agent = property?.agent;
+  const agentId =
+    typeof agent === "object" && agent && "$id" in agent
+      ? String(agent.$id || "")
+      : "";
+  const uploadedAgentAvatar =
+    typeof agent === "object" && agent && "avatar" in agent
+      ? String(agent.avatar || "")
+      : "";
+  const agentName =
+    typeof agent === "object" && agent && "name" in agent
+      ? String(agent.name || "Agent")
+      : "Agent";
+  const agentEmail =
+    typeof agent === "object" && agent && "email" in agent
+      ? String(agent.email || "")
+      : "";
+  const agentFallbackSeed = agentId || agentName;
+  const agentFallbackIndex = agentImages.length
+    ? Math.abs(
+        agentFallbackSeed
+          .split("")
+          .reduce((sum, char) => sum + char.charCodeAt(0), 0)
+      ) % agentImages.length
+    : 0;
+  const fallbackAgentAvatar =
+    agentImages[agentFallbackIndex] ?? uploadedAgentAvatar;
+  const agentAvatar =
+    uploadedAgentAvatar && !uploadedAgentAvatarLoadFailed
+      ? uploadedAgentAvatar
+      : fallbackAgentAvatar;
+  const isShowingUploadedAgentAvatar = agentAvatar === uploadedAgentAvatar;
+
+  useEffect(() => {
+    // Prefer uploaded agent/user images, then fall back to the seeded pool if the custom URL changes.
+    setUploadedAgentAvatarLoadFailed(false);
+  }, [uploadedAgentAvatar]);
+
+
   return (
-    <View>
+    <View className="flex-1 bg-white">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-32 bg-white"
+       // Leave extra scroll space for the floating price/book bar and the phone safe area.
+        contentContainerStyle={{ paddingBottom: 160 + insets.bottom }}
+        contentContainerClassName="bg-white"
       >
         <View className="relative w-full" style={{ height: windowHeight / 2 }}>
           <Image
@@ -121,17 +169,22 @@ const Property = () => {
 
             <View className="flex flex-row items-center justify-between mt-4">
               <View className="flex flex-row items-center">
-                <Image
-                  source={{ uri: property?.agent?.avatar }}
-                  className="size-14 rounded-full"
-                />
+                  <Image
+                    source={{ uri: agentAvatar }}
+                    className="size-14 rounded-full"
+                    onError={() => {
+                      if (isShowingUploadedAgentAvatar) {
+                        setUploadedAgentAvatarLoadFailed(true);
+                      }
+                    }}
+                  />
 
                 <View className="flex flex-col items-start justify-center ml-3">
                   <Text className="text-lg text-black-300 text-start font-rubik-bold">
-                    {property?.agent?.name}
+                    {agentName}
                   </Text>
                   <Text className="text-sm text-black-200 text-start font-rubik-medium">
-                    {property?.agent?.email}
+                    {agentEmail}
                   </Text>
                 </View>
               </View>
@@ -253,8 +306,12 @@ const Property = () => {
           )}
         </View>
       </ScrollView>
-
-      <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7">
+      
+      <View 
+        className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7"
+        // Raise the price/book bar above Android gesture buttons and iOS home indicators.
+        style={{ bottom: Math.max(insets.bottom, 16) }}
+      >
         <View className="flex flex-row items-center justify-between gap-10">
           <View className="flex flex-col items-start">
             <Text className="text-black-200 text-xs font-rubik-medium">
