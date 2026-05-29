@@ -1,12 +1,14 @@
+// Appwrite seed script: clears demo collections and repopulates agents, reviews, galleries, and properties.
 import { ID } from "react-native-appwrite";
 import { config, databases } from "./appwrite";
 import {
-    agentImages,
-    galleryImages,
-    propertiesImages,
-    reviewImages,
+  agentImages,
+  galleryImages,
+  propertiesImages,
+  reviewImages,
 } from "./data";
 
+// Map friendly names to collection IDs configured through environment variables.
 const COLLECTIONS = {
   AGENT: config.agentsCollectionId,
   REVIEWS: config.reviewsCollectionId,
@@ -37,6 +39,7 @@ const facilities = [
   "Pet_Center",
 ];
 
+// Returns random related documents so seeded properties have varied galleries and reviews.
 function getRandomSubset<T>(
   array: T[],
   minItems: number,
@@ -71,6 +74,7 @@ function getRandomSubset<T>(
   return arrayCopy.slice(0, subsetSize);
 }
 
+// Main seeding flow: clear old demo data, then recreate related records in dependency order.
 async function seed() {
   try {
     // Clear existing data from all collections

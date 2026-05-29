@@ -1,3 +1,4 @@
+// Explore screen: fetches and displays searchable/filterable property cards in a grid.
 import { router, useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
@@ -19,6 +20,7 @@ import { useAppwrite } from "@/lib/useAppwrite";
 import React, { useEffect } from "react";
 
 export default function Explore() {
+    // Query/filter live in the URL so Search and Filters can update this screen without prop drilling.
     const params = useLocalSearchParams<{ query?: string; filter?: string }>();
 
     const {
@@ -36,13 +38,14 @@ export default function Explore() {
     });
 
     useEffect(() => {
+      // Refetch whenever the URL query or category filter changes.
       refetch({
         filter: params.filter!,
         query: params.query!,
         limit: 12,
       });
     }, [params.filter, params.query, refetch]);
-    
+    // Navigate to the dynamic property details route for the tapped card.
     const handleCardPress = (id: string) => router.push(`/properties/${id}`);
 
   return (

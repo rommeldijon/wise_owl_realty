@@ -1,9 +1,11 @@
+// Empty-state component: shown when a property query returns no results.
 import React from 'react';
 import { Image, Text, View } from 'react-native';
 
 import images from '@/constants/images';
 
 const NoResults = () => {
+  // Static empty state keeps list screens friendly when Appwrite returns no documents.
   return (
     <View className='flex items-center my-5'>
         <Image 

@@ -1,3 +1,4 @@
+// Property card components: reusable compact and featured cards for property lists.
 import { Image, Text, View } from "react-native";
 
 import icons from "@/constants/icons";

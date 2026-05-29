@@ -1,3 +1,4 @@
+// Property card components: reusable compact and featured cards for property lists.
 import React from 'react';
 import {
     Image,

@@ -1,3 +1,4 @@
+// Search input component: debounces text changes and writes the query to Expo Router params.
 import { router, useLocalSearchParams, usePathname } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, TextInput, TouchableOpacity, View } from 'react-native';
@@ -6,10 +7,13 @@ import { useDebouncedCallback } from "use-debounce";
 import icons from '@/constants/icons';
 
 const Search = () => {
-  const path = usePathname();
+  const path = usePathname();  
+
+  // Initialize the input from the current URL query so search state survives navigation.
   const params = useLocalSearchParams<{ query?: string }> ();
   const [search, setSearch] = useState(params.query);
-
+  
+  // Debounce route updates to avoid refetching properties on every keystroke.
   const debouncedSearch = useDebouncedCallback((text: string) => {
     console.log("Searching:", text);
     router.setParams({ query: text });

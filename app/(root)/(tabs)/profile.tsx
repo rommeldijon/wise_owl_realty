@@ -1,3 +1,4 @@
+// Profile screen: shows current-user details, settings shortcuts, avatar fallback, and logout.
 import React from 'react';
 import { Alert, Image, ImageSourcePropType, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +16,7 @@ interface SettingsItemProp {
   showArrow?: boolean;
 }
 
+// Renders one settings row and optionally hides the right arrow for actions like Logout.
 const SettingsItem = ({
   icon, 
   title,
@@ -41,6 +43,7 @@ const Profile = () => {
   const { user, refetch } = useGlobalContext();
   const [avatarLoadFailed, setAvatarLoadFailed] = React.useState(false);
 
+  // Initials provide a readable fallback when no custom profile image is available.
   const initialsSource = user?.name?.trim() || user?.email?.trim() || '';
 
   const userInitials = initialsSource
@@ -55,6 +58,7 @@ const Profile = () => {
   }, [user?.avatar]);
 
   const handleLogout = async () => {
+    // Delete the current Appwrite session and refresh auth state so protected routes redirect.
      const result = await logout();
      if (result) {
          Alert.alert('Success', 'Logged out successfully');

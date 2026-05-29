@@ -1,9 +1,11 @@
+// Bottom-tab navigator: defines the Home, Explore, and Profile tabs and their shared tab icon UI.
 import icons from '@/constants/icons';
 
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Image, ImageSourcePropType, Text, View } from "react-native";
 
+// Renders one tab icon/label pair and switches color based on focus state.
 const TabIcon = ({
   focused,
   icon,
@@ -35,6 +37,7 @@ const TabIcon = ({
 const TabsLayout = () => {
   return (
     <Tabs
+        // Hide default labels because TabIcon renders both icon and label manually.
         screenOptions={{
             tabBarShowLabel: false,
             tabBarStyle: {

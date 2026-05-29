@@ -1,3 +1,4 @@
+// Filter chip row: stores the selected category in route params so screens can refetch data.
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, Text, TouchableOpacity } from 'react-native';
@@ -5,11 +6,13 @@ import { ScrollView, Text, TouchableOpacity } from 'react-native';
 import { categories } from '@/constants/data';
 
 const Filters = () => {
+    // Read the active filter from the URL so Home and Explore can share the same component.
     const params = useLocalSearchParams<{filter?: string}>();
     const [selectedCategory, setSelectedCategory] =
  useState(params.filter || 'All');
 
     const handleCategoryPress = (category:string) => {
+        // Tapping the selected category again clears the filter.
         if (selectedCategory === category) {
             setSelectedCategory("");
             router.setParams({ filter:"" });

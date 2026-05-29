@@ -1,3 +1,4 @@
+// Global auth provider: shares current-user, loading, login status, and refetch through React context.
 import { createContext, ReactNode, useContext } from "react";
 import { getCurrentUser } from "./appwrite";
 import { useAppwrite } from "./useAppwrite";
@@ -16,7 +17,7 @@ interface User {
     avatar?: string;
 }
 
-
+// Undefined default lets the custom hook detect usage outside the provider.
 const GlobalContext = createContext<GlobalContextType | undefined> (undefined);
 
 export const GlobalProvider = ({ children }: {children: ReactNode
@@ -30,6 +31,7 @@ export const GlobalProvider = ({ children }: {children: ReactNode
         fn: getCurrentUser,
     });
 
+    // The app treats any loaded Appwrite user as an authenticated session.
     const isLoggedIn = !!user;
 
     return (

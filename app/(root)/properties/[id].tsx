@@ -1,3 +1,4 @@
+// Property details screen: fetches one property and renders its media, agent, location, reviews, and booking bar.
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {

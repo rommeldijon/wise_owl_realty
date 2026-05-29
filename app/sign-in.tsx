@@ -1,3 +1,4 @@
+// Sign-in screen: lets users start the Appwrite Google OAuth flow and redirects authenticated users.
 import React from 'react';
 import {
   Alert,
@@ -18,9 +19,11 @@ import { Redirect } from 'expo-router';
 const SignIn = () => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
 
+  // If a user session already exists, skip the login UI and send them home.
   if(!loading && isLoggedIn) return <Redirect href="/" />;
 
   const handleLogin = async() => {
+    // Start the Google OAuth flow through Appwrite and refresh global auth state after success.
     const result = await login();
 
     if (result) {

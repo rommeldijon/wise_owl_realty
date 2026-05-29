@@ -1,3 +1,4 @@
+// Home screen: shows the user greeting, search, featured properties, filters, and recommendations.
 import { router, useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
@@ -20,10 +21,12 @@ import { useAppwrite } from "@/lib/useAppwrite";
 import React, { useEffect } from "react";
 
 export default function Index() {
+    // Current user powers the greeting and avatar shown at the top of Home.
     const { user } = useGlobalContext();
     const [avatarLoadFailed, setAvatarLoadFailed] = React.useState(false);
     const params = useLocalSearchParams<{ query?: string; filter?: string }>();
 
+    // Featured carousel data is fetched separately from the recommendation grid.
     const { 
       data: latestProperties, 
       loading: latestPropertiesLoading } =
@@ -54,7 +57,8 @@ export default function Index() {
     }, [params.filter, params.query]);
     
     const handleCardPress = (id: string) => router.push(`/properties/${id}`);
-
+    
+    // Initials keep the header useful when the user has not uploaded an avatar.
     const initialsSource = user?.name?.trim() || user?.email?.trim() || "";
     const userInitials = initialsSource
       .split(/\s+/)

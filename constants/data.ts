@@ -1,6 +1,8 @@
+// Static UI data: categories, settings rows, facilities, and sample cards used by screens/components.
 import icons from "./icons";
 import images from "./images";
 
+// Placeholder card data kept for local UI experiments and examples.
 export const cards = [
   {
     title: "Card 1",
@@ -55,6 +57,7 @@ export const featuredCards = [
   },
 ];
 
+// Filter chips use category for Appwrite queries and title for display text.
 export const categories = [
   { title: "All", category: "All" },
   { title: "Houses", category: "House" },
@@ -67,6 +70,7 @@ export const categories = [
   { title: "Others", category: "Others" },
 ];
 
+// Profile settings menu items share a common icon/title structure.
 export const settings = [
   {
     title: "My Bookings",
@@ -102,6 +106,7 @@ export const settings = [
   },
 ];
 
+// Facility titles must match the strings stored on property documents to pick the right icon.
 export const facilities = [
   {
     title: "Laundry",

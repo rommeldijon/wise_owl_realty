@@ -1,15 +1,17 @@
+// Appwrite client layer: configures auth/database clients and exposes app data helpers.
 import * as Linking from 'expo-linking';
 import * as WebBrowser from "expo-web-browser";
 import { openAuthSessionAsync } from "expo-web-browser";
 import {
-    Account,
-    Client,
-    Databases,
-    OAuthProvider,
-    Query
+  Account,
+  Client,
+  Databases,
+  OAuthProvider,
+  Query
 } from "react-native-appwrite";
 WebBrowser.maybeCompleteAuthSession();
 
+// Values come from Expo public env vars so the same code can target different Appwrite projects.
 export const config = {
     platform: 'com.talinosolutions.wiseowlrealty',
     endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
@@ -31,8 +33,7 @@ client
 export const account = new Account(client);
 export const databases = new Databases(client);
 
-
-
+// Opens Google OAuth in a browser session and exchanges the returned secret for an Appwrite session.
 export async function login () {
     try {
         const redirectUri = Linking.createURL('/');
@@ -79,6 +80,7 @@ export async function logout() {
 
 }
 
+// Reads the active account and normalizes optional avatar preferences for the UI.
 export async function getCurrentUser() {
   try {
     const result = await account.get();
@@ -117,6 +119,7 @@ export async function getLatestProperties() {
     }
 }
 
+// Lists properties using optional type filters, text search, and result limits.
 export async function getProperties({ 
     filter, 
     query, 
